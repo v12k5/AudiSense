@@ -1,3 +1,9 @@
+#---
+# Just for basic understanding of STFT and spectrogram computation
+# Not the code for our project
+#---
+
+
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.io import wavfile
