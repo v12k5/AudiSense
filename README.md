@@ -3,9 +3,7 @@
 A simple mobile app built with React Native (Expo) that lets you:
 
 Record audio
-
 Save the recording
-
 Play the recording back
 
 Works on both Android and iOS using the Expo Go app.
@@ -13,13 +11,9 @@ Works on both Android and iOS using the Expo Go app.
 🚀 Features
 
 Start / stop audio recording with one button
-
 Save audio file internally (URI displayed on screen)
-
 Play back the recording
-
 Microphone permission handling
-
 Cross-platform support with Expo
 
 🛠️ Tech Stack
@@ -68,9 +62,7 @@ The app will open instantly.
 📱 Usage
 
 Tap Start Recording → Speak something.
-
 Tap Stop Recording → The file will be saved (you’ll see its URI).
-
 Tap Play Recording → Hear your recorded audio.
 
 📷 Screenshots (example layout)
@@ -86,9 +78,7 @@ Tap Play Recording → Hear your recorded audio.
 ⚠️ Notes
 
 Audio files are stored in the app’s sandboxed storage (URI is shown).
-
 On iOS, you must grant microphone permissions.
-
 If using an Android emulator, make sure the microphone works in emulator settings.
 
 📄 License
