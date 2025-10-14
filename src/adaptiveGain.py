@@ -1,17 +1,22 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import os
 
-def load_stft_data(input_path='stft_data.npz'):
+def load_stft_data(signal_name, base_folder='matrix', file_name='stft_data.npz'):
     """
-    Load STFT matrix and sampling rate from .npz file.
+    Load STFT matrix and sampling rate from .npz file in structured folder.
     
     Parameters:
-    - input_path (str): Path to the .npz file.
+    - signal_name (str): Name of the input signal (without extension) for sub-folder.
+    - base_folder (str): Base folder for matrices (default: 'matrix').
+    - file_name (str): Name of the .npz file (default: 'stft_data.npz').
     
     Returns:
     - stft_matrix (np.ndarray): Complex STFT matrix.
     - fs (int): Sampling rate.
     """
+    sub_folder = os.path.join(base_folder, signal_name)
+    input_path = os.path.join(sub_folder, file_name)
     data = np.load(input_path)
     return data['stft_matrix'], data['fs']
 
@@ -81,6 +86,20 @@ def apply_gain(stft_matrix, snr_pri):
     enhanced_stft = stft_matrix * gain  # Eq 8 (element-wise)
     return enhanced_stft
 
+def save_enhanced_stft_data(enhanced_stft, fs, signal_name, base_folder='matrix'):
+    """
+    Save enhanced STFT matrix and sampling rate to a .npz file in structured folder.
+    
+    Parameters:
+    - enhanced_stft (np.ndarray): Enhanced STFT matrix.
+    - fs (int): Sampling rate.
+    - signal_name (str): Name of the input signal (without extension) for sub-folder.
+    - base_folder (str): Base folder for matrices (default: 'matrix').
+    """
+    sub_folder = os.path.join(base_folder, signal_name)
+    output_path = os.path.join(sub_folder, 'enhanced_stft_data.npz')
+    np.savez(output_path, enhanced_stft=enhanced_stft, fs=fs)
+
 def plot_spectrograms(mag_noisy, mag_enhanced, fs):
     """
     Plot magnitude spectrograms for original and enhanced.
@@ -113,7 +132,8 @@ def plot_spectrograms(mag_noisy, mag_enhanced, fs):
 
 # Main execution
 if __name__ == "__main__":
-    stft_matrix, fs = load_stft_data()
+    signal_name = 'sp01_train_sn5'  # Name without extension, matching Code 1
+    stft_matrix, fs = load_stft_data(signal_name)
     print(f"Loaded STFT with shape: {stft_matrix.shape}, fs: {fs} Hz")
     
     magnitude = np.abs(stft_matrix)
@@ -128,5 +148,8 @@ if __name__ == "__main__":
     enhanced_stft = apply_gain(stft_matrix, snr_pri)
     enhanced_magnitude = np.abs(enhanced_stft)
     print("Gain applied")
+    
+    save_enhanced_stft_data(enhanced_stft, fs, signal_name)
+    print(f"Enhanced STFT data saved to 'matrix/{signal_name}/adaptiveGain.npz'")
     
     plot_spectrograms(magnitude, enhanced_magnitude, fs)

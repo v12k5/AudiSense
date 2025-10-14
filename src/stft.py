@@ -43,21 +43,26 @@ def compute_stft(signal, fs, frame_length_ms=25, overlap_percent=50):
                              padded=True)
     return f, t, stft_matrix
 
-def save_stft_data(stft_matrix, fs, output_path='stft_data.npz'):
+def save_stft_data(stft_matrix, fs, signal_name, base_folder='matrix'):
     """
-    Save STFT matrix and sampling rate to a .npz file.
+    Save STFT matrix and sampling rate to a .npz file in a structured folder.
     
     Parameters:
     - stft_matrix (np.ndarray): STFT matrix.
     - fs (int): Sampling rate.
-    - output_path (str): Path to save the .npz file.
+    - signal_name (str): Name of the input signal (without extension) for sub-folder.
+    - base_folder (str): Base folder for matrices (default: 'matrix').
     """
+    sub_folder = os.path.join(base_folder, signal_name)
+    os.makedirs(sub_folder, exist_ok=True)
+    output_path = os.path.join(sub_folder, 'stft_data.npz')
     np.savez(output_path, stft_matrix=stft_matrix, fs=fs)
 
 # Main execution
 if __name__ == "__main__":
     data_folder = 'data'
     file_name = 'sp01_train_sn5.wav'
+    signal_name = os.path.splitext(file_name)[0]  # Extract name without extension
     file_path = os.path.join(data_folder, file_name)
     
     fs, signal = load_audio(file_path)
@@ -66,5 +71,5 @@ if __name__ == "__main__":
     f, t, stft_matrix = compute_stft(signal, fs)
     print(f"STFT shape: {stft_matrix.shape} (freq bins: {len(f)}, time frames: {len(t)})")
     
-    save_stft_data(stft_matrix, fs, output_path='stft_data.npz')
-    print("STFT data saved to 'stft_data.npz'")
+    save_stft_data(stft_matrix, fs, signal_name)
+    print(f"STFT data saved to 'matrix/{signal_name}/stft_data.npz'")
